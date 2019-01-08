@@ -1,0 +1,48 @@
+#!/bin/bash
+set -eou pipefail
+
+[[ $# -lt 2 ]] && echo -e "Usage: $0 <project_name> <module_name>" && exit 1
+
+project_name=${1}
+module_name=${2}
+project_dir=../${project_name}
+
+old_project_name=llama-trading
+old_module_name=llama_trading
+
+# TODO detect OSX and alias sed
+
+function update_setup() {
+    # no need to replace text related to ${project_name} and ${module_name} here.
+    # the replacement will happen in update_module()
+    sed -i "s/description = .*$/description = TODO/g" setup.json
+}
+
+function update_module() {
+    rm -rf .git
+    mv ${old_module_name} ${module_name}
+    find . -type f | xargs sed -i "s/${old_module_name}/${module_name}/g"
+    find . -type f | xargs sed -i "s/${old_project_name}/${project_name}/g"
+}
+
+function update_readme() {
+    sed -i '/is a barebones repository/d' README.rst
+    sed -i '/which plan to utilize/d' README.rst
+}
+
+# need to delete the project directory if it already exists.
+# let the user do it to avoid removing too much when a bad argument is passed.
+[[ -d ${project_dir} ]] && {
+    echo -e "Directory ${project_dir} exists -- delete it first."
+    exit 1
+}
+
+cp -r . ${project_dir}
+pushd ${project_dir}
+make clean
+
+update_setup
+update_module
+update_readme
+
+popd

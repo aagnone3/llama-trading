@@ -1,0 +1,15 @@
+{
+    "package_info": {
+        "friendly_name": "llama-trading",
+        "module_name": "llama_trading",
+        "description": "Trading with Alpaca",
+        "url": "https://github.com/aagnone3/llama-trading",
+        "author": "Anthony Agnone",
+        "author_email": "anthonyagnone@gmail.com"
+    },
+    "entry_points": {
+        "console_scripts": [
+            "hello_world=llama_trading.tools.hello_world:main"
+        ]
+    }
+}

@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+from argparse import ArgumentParser
+
+
+def get_clargs():
+    parser = ArgumentParser()
+    parser.add_argument(dest="version_fn", help="Path to file with a __version__ assignment on line 1.")
+    parser.add_argument("-m", "--minor", required=False, default=False, action='store_true',
+                        help="Bump the minor version.")
+    parser.add_argument("-M", "--major", required=False, default=False, action='store_true',
+                        help="Bump the major version.")
+    return parser.parse_args()
+
+
+def main(version_fn, bump_major, bump_minor):
+    with open(version_fn) as fp:
+        version = fp.readlines()[0].strip().split('=')[1].replace(' ', '')
+        major, minor = [int(num) for num in version.split('.')]
+        if bump_major:
+            major += 1
+        if bump_minor:
+            minor += 1
+    with open(version_fn, 'w') as fp:
+        fp.write("__version__ = {}.{}".format(major, minor))
+
+
+if __name__ == '__main__':
+    args = get_clargs()
+    main(args.version_fn, args.major, args.minor)

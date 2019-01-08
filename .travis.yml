@@ -1,0 +1,43 @@
+language: python
+
+python:
+    - '3.5'
+
+env:
+    global:
+        - TEST_DIR=/tmp/module_testing
+        - |
+          REPO=$(grep "friendly_name\":" setup.json | head -n1 | cut -d ':' -f2 | sed 's/[" ,]//g')
+        - |
+          MODULE=$(grep "module_name\":" setup.json | head -n1 | cut -d ':' -f2 | sed 's/[" ,]//g')
+
+# TODO install in a Docker container
+addons:
+    apt:
+        packages:
+            - libexempi3
+
+install:
+    - bash .ci/install.sh
+
+script:
+    - bash .ci/test.sh
+
+after_success:
+    - bash .ci/upload_test_coverage.sh
+    - bash .ci/generate_docs.sh
+
+notifications:
+    email:
+        on_success: change
+        on_failure: always
+
+deploy:
+    provider: pages
+    skip-cleanup: true
+    keep-history: true
+    github-token: ${GITHUB_TOKEN}
+    target-branch: gh-pages
+    local-dir: docs/build/html
+    on:
+        branch: master
