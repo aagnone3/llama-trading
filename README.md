@@ -1,0 +1,2 @@
+# llama-trading
+Alpaca logic
