@@ -5,11 +5,11 @@ MODULE_NAME = $(shell grep "module_name\":" setup.json | head -n1 | cut -d ':' -
 VERSION_FN = ${MODULE_NAME}/version.py
 
 help:
-	@echo "Personal container."
 	@echo ""
 	@echo "Targets:"
 	@echo "  help          Print this help message"
 	@echo "  build         Build the package"
+	@echo "  container     Build the container"
 	@echo "  pypi          Upload the the main PyPi server"
 	@echo "  pypi_test     Upload the the test PyPi server"
 	@echo "  bump_version  Bump the module version"
@@ -18,6 +18,13 @@ help:
 clean:
 	rm -rf build/* dist/* *egg-info*
 	find . -name __pycache__ | xargs rm -rf
+
+.PHONY: container
+container:
+	docker \
+		build \
+		-t alpaca \
+		.
 
 .PHONY: build
 build: clean

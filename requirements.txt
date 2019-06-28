@@ -1,2 +1,2 @@
-pandas
-numpy
+alpaca-trade-api
+alpaca-backtrader-api
